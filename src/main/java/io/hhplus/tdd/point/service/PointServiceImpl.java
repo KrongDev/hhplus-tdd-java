@@ -30,7 +30,7 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
-    public UserPoint chargePoint(long userId, long amount) {
+    synchronized public UserPoint chargePoint(long userId, long amount) {
         UserPoint userPoint = loadPoint(userId);
         long changePoint = userPoint.point() + amount;
         long updateTime = System.currentTimeMillis();
@@ -40,7 +40,7 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
-    public UserPoint usePoint(long userId, long amount) {
+    synchronized public UserPoint usePoint(long userId, long amount) {
         UserPoint userPoint = loadPoint(userId);
         long changePoint = userPoint.point() - amount;
         if (changePoint < 0)
