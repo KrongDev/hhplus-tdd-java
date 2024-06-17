@@ -1,6 +1,6 @@
 package io.hhplus.tdd.point;
 
-import org.junit.jupiter.api.BeforeEach;
+import io.hhplus.tdd.point.service.PointService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,12 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -23,35 +24,37 @@ class PointControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
+    private PointService pointService;
+    @Autowired
     private WebApplicationContext webApplicationContext;
 
     private final String rootPath = "/point";
     private final long userId = 0;
     private final String actionUrl = String.format("%s/%d", rootPath, userId);
 
-
-    @BeforeEach
-    void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
-                .alwaysDo(print())
-                .build();
-    }
-
     @Test
     @Description("User Id로 포인트 조회 API Test")
     void point() throws Exception {
         mockMvc.perform(get(actionUrl))
-                .andExpect(status().isOk());
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(userId))
+            .andExpect(jsonPath("$.point").value(0))
+            .andExpect(jsonPath("$.updateMillis").value(not(0)));
     }
 
     @Test
     @Description("User Id로 포인트 충전/이용 내역 조회 API Test")
     void history() throws Exception {
-        charge();
-        use();
+        //Given
+        pointService.chargePoint(userId, 100);
+        pointService.usePoint(userId, 50);
 
+        //When-Then
         mockMvc.perform(get(actionUrl + "/histories"))
-                .andExpect(status().isOk());
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[*].userId", everyItem(is(0))));
     }
 
     @Test
@@ -59,23 +62,33 @@ class PointControllerTest {
     void charge() throws Exception {
         long amount = 100;
         mockMvc.perform(
-                        patch(actionUrl + "/charge")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(String.valueOf(amount))
-                )
-                .andExpect(status().isOk());
+            patch(actionUrl + "/charge")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(amount))
+        )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(userId))
+            .andExpect(jsonPath("$.point").value(amount));
     }
 
     @Test
     @Description("User Id로 포인트 사용 API Test")
     void use() throws Exception {
+        //Given
+        long amount = 100;
+        pointService.chargePoint(userId, amount);
+
+        //When-Then
         long useAmount = 50;
-        charge();
         mockMvc.perform(
-                        patch(actionUrl + "/use")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(String.valueOf(useAmount))
-                )
-                .andExpect(status().isOk());
+            patch(actionUrl + "/use")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(useAmount))
+        )
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(userId))
+        .andExpect(jsonPath("$.point").value(amount - useAmount));
     }
 }
