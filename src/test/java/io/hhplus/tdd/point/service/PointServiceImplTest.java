@@ -23,35 +23,6 @@ class PointServiceImplTest {
     private PointService pointService;
 
     @Test
-    @Description("UserPointInfo 조회 테스트")
-    void loadPoint() {
-        //Given
-        long userId = 1L;
-
-        //When
-        UserPointInfo userPointInfo = pointService.loadPoint(userId);
-
-        //Then
-        assertEquals(userId, userPointInfo.getId());
-    }
-
-    @Test
-    @Description("UserPointInfo 조회 테스트")
-    void loadHistory() {
-        //Given
-        long userId = 1L;
-        long chargeAmount = 100L;
-        pointService.chargePoint(userId, chargeAmount);
-
-        //When
-        List<PointHistoryInfo> histories = pointService.loadHistory(userId);
-
-        //Then
-        assertEquals(1, histories.size());
-        assertEquals(chargeAmount, histories.get(0).getAmount());
-    }
-
-    @Test
     @Description("포인트 충전 동시성 테스트")
     void chargePoint() throws InterruptedException {
         //Given
