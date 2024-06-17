@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -36,23 +37,15 @@ class PointControllerTest {
                 .build();
     }
 
-    /**
-     * User Id로 포인트 조회 API Test
-     *
-     * @throws Exception MockMvc perform exception
-     */
     @Test
+    @Description("User Id로 포인트 조회 API Test")
     void point() throws Exception {
         mockMvc.perform(get(actionUrl))
                 .andExpect(status().isOk());
     }
 
-    /**
-     * User Id로 포인트 충전/이용 내역 조회 API Test
-     *
-     * @throws Exception MockMvc perform exception
-     */
     @Test
+    @Description("User Id로 포인트 충전/이용 내역 조회 API Test")
     void history() throws Exception {
         charge();
         use();
@@ -61,12 +54,8 @@ class PointControllerTest {
                 .andExpect(status().isOk());
     }
 
-    /**
-     * User Id로 포인트 충전 API Test
-     *
-     * @throws Exception MockMvc perform exception
-     */
     @Test
+    @Description("User Id로 포인트 충전 API Test")
     void charge() throws Exception {
         long amount = 100;
         mockMvc.perform(
@@ -77,12 +66,8 @@ class PointControllerTest {
                 .andExpect(status().isOk());
     }
 
-    /**
-     * User Id로 포인트 사용 API Test
-     *
-     * @throws Exception MockMvc perform exception
-     */
     @Test
+    @Description("User Id로 포인트 사용 API Test")
     void use() throws Exception {
         long useAmount = 50;
         charge();
