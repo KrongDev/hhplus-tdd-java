@@ -1,2 +1,7 @@
 spring:
   application.name: hhplus-tdd
+server:
+  port: 8080
+logging:
+  level:
+    io.hhplus.tdd: info
