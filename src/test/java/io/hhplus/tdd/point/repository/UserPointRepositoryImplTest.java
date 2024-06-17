@@ -20,7 +20,7 @@ class UserPointRepositoryImplTest {
     private UserPointTable userPointTable;
 
     @Test
-    @Description("UserPointTable에 정상적으로 UserPoint정보를 저장하는지 확인하는 Test")
+    @Description("UserPointTable에 정상적으로 UserPoint정보를 저장하는지 확인하는 테스트")
     void save() {
         //Given
         long userId = 1L;
@@ -36,7 +36,7 @@ class UserPointRepositoryImplTest {
     }
 
     @Test
-    @Description("UserPointTable에서 정상적으로 UserPoint정보를 조회하는지 확인하는 Test")
+    @Description("UserPointTable에서 정상적으로 UserPoint정보를 조회하는지 확인하는 테스트")
     void findById() {
         //Given
         long userId = 1L;

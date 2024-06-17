@@ -23,7 +23,7 @@ class PointHistoryRepositoryImplTest {
     private PointHistoryTable table;
 
     @Test
-    @Description("PointHistoryTable에 정상적으로 PointHistory를 저장하는지 확인하는 Test")
+    @Description("PointHistoryTable에 정상적으로 PointHistory를 저장하는지 확인하는 테스트")
     void save() {
         //Given
         long userId = 1L;
@@ -43,7 +43,7 @@ class PointHistoryRepositoryImplTest {
     }
 
     @Test
-    @Description("PointHistoryTable에서 UserId로 PointHistory를 정상적으로 조회하는지 확인하는 Test")
+    @Description("PointHistoryTable에서 UserId로 PointHistory를 정상적으로 조회하는지 확인하는 테스트")
     void findById() {
         //Given
         long userId = 1L;

@@ -1,6 +1,7 @@
 package io.hhplus.tdd.point.service;
 
 import io.hhplus.tdd.point.aggregate.domain.PointHistoryInfo;
+import io.hhplus.tdd.point.aggregate.domain.UserPointInfo;
 import jdk.jfr.Description;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,35 @@ class PointServiceImplTest {
 
     @Autowired
     private PointService pointService;
+
+    @Test
+    @Description("UserPointInfo 조회 테스트")
+    void loadPoint() {
+        //Given
+        long userId = 1L;
+
+        //When
+        UserPointInfo userPointInfo = pointService.loadPoint(userId);
+
+        //Then
+        assertEquals(userId, userPointInfo.getId());
+    }
+
+    @Test
+    @Description("UserPointInfo 조회 테스트")
+    void loadHistory() {
+        //Given
+        long userId = 1L;
+        long chargeAmount = 100L;
+        pointService.chargePoint(userId, chargeAmount);
+
+        //When
+        List<PointHistoryInfo> histories = pointService.loadHistory(userId);
+
+        //Then
+        assertEquals(1, histories.size());
+        assertEquals(chargeAmount, histories.get(0).getAmount());
+    }
 
     @Test
     @Description("포인트 충전 동시성 테스트")
@@ -65,7 +95,6 @@ class PointServiceImplTest {
         int memberCount = 10;
         ExecutorService executorsService = Executors.newFixedThreadPool(memberCount);
         CountDownLatch latch = new CountDownLatch(memberCount);
-
 
         AtomicInteger successCount = new AtomicInteger();
         AtomicInteger failCount = new AtomicInteger();

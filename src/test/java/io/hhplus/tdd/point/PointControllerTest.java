@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,15 +24,13 @@ class PointControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private PointService pointService;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     private final String rootPath = "/point";
     private final long userId = 0;
     private final String actionUrl = String.format("%s/%d", rootPath, userId);
 
     @Test
-    @Description("User Id로 포인트 조회 API Test")
+    @Description("User Id로 포인트 조회 API 테스트")
     void point() throws Exception {
         mockMvc.perform(get(actionUrl))
             .andDo(print())
@@ -44,7 +41,7 @@ class PointControllerTest {
     }
 
     @Test
-    @Description("User Id로 포인트 충전/이용 내역 조회 API Test")
+    @Description("User Id로 포인트 충전/이용 내역 조회 API 테스트")
     void history() throws Exception {
         //Given
         pointService.chargePoint(userId, 100);
@@ -58,7 +55,7 @@ class PointControllerTest {
     }
 
     @Test
-    @Description("User Id로 포인트 충전 API Test")
+    @Description("User Id로 포인트 충전 API 테스트")
     void charge() throws Exception {
         long amount = 100;
         mockMvc.perform(
@@ -66,14 +63,14 @@ class PointControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(String.valueOf(amount))
         )
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(userId))
-            .andExpect(jsonPath("$.point").value(amount));
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(userId))
+        .andExpect(jsonPath("$.point").value(amount));
     }
 
     @Test
-    @Description("User Id로 포인트 사용 API Test")
+    @Description("User Id로 포인트 사용 API 테스트")
     void use() throws Exception {
         //Given
         long amount = 100;
