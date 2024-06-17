@@ -1,8 +1,8 @@
 package io.hhplus.tdd.point.repository;
 
-import io.hhplus.tdd.point.UserPoint;
+import io.hhplus.tdd.point.aggregate.domain.UserPointInfo;
 
 public interface UserPointRepository {
-    UserPoint save(long userId, long amount);
-    UserPoint findById(long userId);
+    UserPointInfo save(long userId, long amount);
+    UserPointInfo findById(long userId);
 }
