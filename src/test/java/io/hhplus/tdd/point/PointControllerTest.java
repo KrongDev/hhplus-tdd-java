@@ -51,6 +51,7 @@ class PointControllerTest {
         mockMvc.perform(get(actionUrl + "/histories"))
             .andDo(print())
             .andExpect(status().isOk())
+                // UserId는 long type이기 때문에 is()에 넣을시 0 != 0L 이유로 인한 오류 발생
             .andExpect(jsonPath("$[*].userId", everyItem(is(0))));
     }
 
