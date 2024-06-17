@@ -1,11 +1,14 @@
 package io.hhplus.tdd.point;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -18,9 +21,20 @@ class PointControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
     private final String rootPath = "/point";
     private final long userId = 0;
     private final String actionUrl = String.format("%s/%d", rootPath, userId);
+
+
+    @BeforeEach
+    void setup() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
+                .alwaysDo(print())
+                .build();
+    }
 
     /**
      * User Id로 포인트 조회 API Test
@@ -30,7 +44,6 @@ class PointControllerTest {
     @Test
     void point() throws Exception {
         mockMvc.perform(get(actionUrl))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 
@@ -41,8 +54,10 @@ class PointControllerTest {
      */
     @Test
     void history() throws Exception {
+        charge();
+        use();
+
         mockMvc.perform(get(actionUrl + "/histories"))
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 
@@ -56,10 +71,9 @@ class PointControllerTest {
         long amount = 100;
         mockMvc.perform(
                         patch(actionUrl + "/charge")
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .contentType(MediaType.APPLICATION_JSON)
                                 .content(String.valueOf(amount))
                 )
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 
@@ -70,13 +84,13 @@ class PointControllerTest {
      */
     @Test
     void use() throws Exception {
-        long amount = 100;
+        long useAmount = 50;
+        charge();
         mockMvc.perform(
                         patch(actionUrl + "/use")
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(String.valueOf(amount))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(String.valueOf(useAmount))
                 )
-                .andDo(print())
                 .andExpect(status().isOk());
     }
 }
