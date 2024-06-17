@@ -88,4 +88,22 @@ class PointControllerTest {
         .andExpect(jsonPath("$.id").value(userId))
         .andExpect(jsonPath("$.point").value(amount - useAmount));
     }
+
+    @Test
+    @Description("User Id로 포인트 사용 API 실패 상황 테스트(잔여 포인트가 부족한 경우)")
+    void usePointException() throws Exception {
+        //Given
+        long amount = 100;
+        pointService.chargePoint(userId, amount);
+
+        //When-Then
+        long useAmount = 150;
+        mockMvc.perform(
+            patch(actionUrl + "/use")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(String.valueOf(useAmount))
+        )
+        .andDo(print())
+        .andExpect(status().is5xxServerError());
+    }
 }
