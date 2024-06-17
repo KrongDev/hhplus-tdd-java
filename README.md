@@ -10,9 +10,7 @@
 
 
 ### 동시성 처리 - 테스트 과정
-1. synchronized 사용   
+1. synchronized 사용 - application Lock 
 여러 요청을 받지만 synchronized가 명시되어있는 메소드 or 코드 블럭 들은 Single Thread를 할당하여 처리      
 장점: 간단한 사용법   
-단점: Single Thread이기때문에 요청이 많이 몰렸을 경우 처리 속도가 저하될 수 있다.   
-     중요한 조건인 순차적인 처리가되지 않았다.
-2. 
+단점: Single Thread이기때문에 요청이 많이 몰렸을 경우 처리 속도가 저하될 수 있다.
