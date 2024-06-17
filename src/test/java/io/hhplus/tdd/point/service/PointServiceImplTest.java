@@ -28,10 +28,36 @@ class PointServiceImplTest {
         CountDownLatch latch = new CountDownLatch(memberCount);
 
         for (int i = 0; i < memberCount; i++) {
-            int finalI = i;
             executorsService.submit(() -> {
                 try {
-                    pointService.chargePoint(userId, amount + finalI);
+                    pointService.chargePoint(userId, amount);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+
+        List<PointHistory> histories = pointService.loadHistory(userId);
+        System.out.println(JsonUtil.toPrettyJson(histories));
+    }
+
+
+    @Test
+    void usePoint() throws InterruptedException, JsonProcessingException {
+        int userId = 1;
+        int amount = 100;
+        int useAmount = 20;
+        pointService.chargePoint(userId, amount);
+
+        int memberCount = 10;
+        ExecutorService executorsService = Executors.newFixedThreadPool(memberCount);
+        CountDownLatch latch = new CountDownLatch(memberCount);
+
+        for (int i = 0; i < memberCount; i++) {
+            executorsService.submit(() -> {
+                try {
+                    pointService.usePoint(userId, useAmount);
                 } finally {
                     latch.countDown();
                 }
