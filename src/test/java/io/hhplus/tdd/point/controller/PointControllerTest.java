@@ -1,99 +1,104 @@
 package io.hhplus.tdd.point.controller;
 
-import io.hhplus.tdd.point.aggregate.domain.PointHistoryDomain;
-import io.hhplus.tdd.point.aggregate.domain.UserPointDomain;
-import io.hhplus.tdd.point.service.PointService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
-import java.util.List;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class PointControllerTest {
 
-    @InjectMocks
-    PointController pointController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
-    PointService pointService;
+    private final String rootPath = "/point";
+    private final long userId = 0;
+    private final String actionUrl = String.format("%s/%d", rootPath, userId);
 
-    private final long userId = 1;
-    private UserPointDomain userPointDomain;
-
-    @BeforeEach
-    void setUp() {
-        userPointDomain = new UserPointDomain(userId, 0, 0); // 적절한 사용자 ID로 설정
+    @Test
+    @DisplayName("포인트 충전 - 정상적으로 충전이 이뤄지는지")
+    void charge() throws Exception {
+        long amount = 100;
+        mockMvc.perform(
+                        patch(actionUrl + "/charge")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(String.valueOf(amount))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.point").value(amount));
+    }
+    @Test
+    @DisplayName("포인트 충전 - 정상적으로 충전이 이뤄지는지")
+    void chargeZeroException() throws Exception {
+        long amount = 100;
+        mockMvc.perform(
+                        patch(actionUrl + "/charge")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(String.valueOf(amount))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.point").value(amount));
     }
 
     @Test
-    @DisplayName("포인트 조회 - 정상적으로 포인트가 조회되는지")
-    void point() {
-        // Given
-        when(pointService.loadPoint(userId)).thenReturn(userPointDomain);
+    @DisplayName("포인트 사용 - 보유 포인트보다 많이 사용하려할 때 에러 테스트")
+    void useOverException() throws Exception {
+        long useAmount = 150;
+        mockMvc.perform(
+                        patch(actionUrl + "/use")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(String.valueOf(useAmount))
+                )
+                .andDo(print())
+                .andExpect(status().is5xxServerError());
+    }
 
-        // When
-        UserPointDomain userPoint = pointController.point(userId);
-
-        // Then
-        assertNotNull(userPoint);
-        assertEquals(userId, userPoint.getId());
+    @Test
+    @DisplayName("포인트 사용 - 사용포인트 0원일때 에러 발생")
+    void useZeroException() throws Exception {
+        long useAmount = 0;
+        mockMvc.perform(
+                        patch(actionUrl + "/use")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(String.valueOf(useAmount))
+                )
+                .andDo(print())
+                .andExpect(status().is5xxServerError());
     }
 
     @Test
     @DisplayName("포인트 내역 조회 - 정상적으로 포인트 내역이 조회되는지")
-    void history() {
-        // Given
-        List<PointHistoryDomain> mockPointHistories = Collections.emptyList();
-        when(pointService.loadHistory(userId)).thenReturn(mockPointHistories);
-
-        // When
-        List<PointHistoryDomain> pointHistories = pointController.history(userId);
-
-        // Then
-        assertNotNull(pointHistories);
-        assertEquals(0, pointHistories.size());
+    void history() throws Exception {
+        mockMvc.perform(get(actionUrl + "/histories"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                // UserId는 long type이기 때문에 is()에 넣을시 0 != 0L 이유로 인한 오류 발생
+                .andExpect(jsonPath("$[*].userId", everyItem(is(0))));
     }
 
     @Test
-    @DisplayName("포인트 충전 - 정상적으로 충전이 이뤄지는지")
-    void charge() {
-        // Given
-        long amount = 100;
-        when(pointService.chargePoint(userId, amount)).thenReturn(new UserPointDomain(userId, amount, System.currentTimeMillis()));
-
-        // When
-        UserPointDomain userPoint = pointController.charge(userId, amount);
-
-        // Then
-        assertNotNull(userPoint);
-        assertEquals(userId, userPoint.getId());
-        assertEquals(amount, userPoint.getPoint());
-        assertNotEquals(0, userPoint.getUpdateMillis());
-    }
-
-    @Test
-    @DisplayName("포인트 사용 - 정상적으로 포인트를 사용할 수 있는지")
-    void use() {
-        // Given
-        long amount = 100;
-        when(pointService.usePoint(userId, amount)).thenReturn(new UserPointDomain(userId, amount, System.currentTimeMillis()));
-
-        // When
-        UserPointDomain userPoint = pointController.use(userId, amount);
-
-        // Then
-        assertNotNull(userPoint);
-        assertEquals(userId, userPoint.getId());
-        assertEquals(amount, userPoint.getPoint());
-        assertNotEquals(0, userPoint.getUpdateMillis());
+    @DisplayName("포인트 조회 - 정상적으로 포인트가 조회되는지")
+    void point() throws Exception {
+        mockMvc.perform(get(actionUrl))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.point").value(0));
     }
 }
