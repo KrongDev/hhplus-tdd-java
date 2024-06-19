@@ -1,5 +1,7 @@
 package io.hhplus.tdd.point.controller;
 
+import io.hhplus.tdd.point.aggregate.domain.PointHistoryDomain;
+import io.hhplus.tdd.point.aggregate.domain.UserPointDomain;
 import io.hhplus.tdd.point.aggregate.entity.PointHistory;
 import io.hhplus.tdd.point.aggregate.entity.UserPoint;
 import org.junit.jupiter.api.DisplayName;
@@ -17,16 +19,16 @@ class PointControllerTest {
     @Test
     @DisplayName("포인트 조회")
     void point() {
-        UserPoint userPoint = pointController.point(userId);
+        UserPointDomain userPoint = pointController.point(userId);
 
         assertNotNull(userPoint);
-        assertEquals(userId, userPoint.id());
+        assertEquals(userId, userPoint.getId());
     }
 
     @Test
     @DisplayName("포인트 내역 조회")
     void history() {
-        List<PointHistory> pointHistories = pointController.history(userId);
+        List<PointHistoryDomain> pointHistories = pointController.history(userId);
 
         assertNotNull(pointHistories);
         assertEquals(0, pointHistories.size());
@@ -36,19 +38,19 @@ class PointControllerTest {
     @DisplayName("포인트 충전")
     void charge() {
         long amount = 100;
-        UserPoint userPoint = pointController.charge(userId, amount);
+        UserPointDomain userPoint = pointController.charge(userId, amount);
         assertNotNull(userPoint);
-        assertEquals(userId, userPoint.id());
-        assertEquals(amount, userPoint.point());
+        assertEquals(userId, userPoint.getId());
+        assertEquals(amount, userPoint.getPoint());
     }
 
     @Test
     @DisplayName("포인트 사용")
     void use() {
         long amount = 100;
-        UserPoint userPoint = pointController.use(userId, amount);
+        UserPointDomain userPoint = pointController.use(userId, amount);
         assertNotNull(userPoint);
-        assertEquals(userId, userPoint.id());
-        assertEquals(amount, userPoint.point());
+        assertEquals(userId, userPoint.getId());
+        assertEquals(amount, userPoint.getPoint());
     }
 }
