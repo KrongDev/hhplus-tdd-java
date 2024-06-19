@@ -45,11 +45,13 @@ class PointServiceImplTest {
         }
         latch.await();
 
+        UserPointInfo userPointInfo = pointService.loadPoint(userId);
         List<PointHistoryInfo> histories = pointService.loadHistory(userId);
         int historySize = histories.size();
 
         //Then
-        assertEquals(histories.get(historySize - 1).getAmount(), 1000);
+        assertEquals(userPointInfo.getPoint(), 1000);
+        assertEquals(historySize, 10);
     }
 
 

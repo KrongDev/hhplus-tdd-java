@@ -1,4 +1,4 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.controller;
 
 import io.hhplus.tdd.point.aggregate.domain.PointHistoryInfo;
 import io.hhplus.tdd.point.aggregate.domain.UserPointInfo;
