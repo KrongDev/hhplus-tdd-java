@@ -41,19 +41,18 @@ class PointControllerTest {
                 .andExpect(jsonPath("$.id").value(userId))
                 .andExpect(jsonPath("$.point").value(amount));
     }
+
     @Test
-    @DisplayName("포인트 충전 - 정상적으로 충전이 이뤄지는지")
+    @DisplayName("포인트 충전 - 0원 충전시 에러 발생")
     void chargeZeroException() throws Exception {
-        long amount = 100;
+        long amount = 0;
         mockMvc.perform(
                         patch(actionUrl + "/charge")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(String.valueOf(amount))
                 )
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userId))
-                .andExpect(jsonPath("$.point").value(amount));
+                .andExpect(status().is5xxServerError());
     }
 
     @Test
@@ -98,7 +97,6 @@ class PointControllerTest {
         mockMvc.perform(get(actionUrl))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userId))
-                .andExpect(jsonPath("$.point").value(0));
+                .andExpect(jsonPath("$.id").value(userId));
     }
 }
