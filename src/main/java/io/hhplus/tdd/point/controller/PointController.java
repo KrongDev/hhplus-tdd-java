@@ -1,5 +1,7 @@
-package io.hhplus.tdd.point;
+package io.hhplus.tdd.point.controller;
 
+import io.hhplus.tdd.point.aggregate.entity.PointHistory;
+import io.hhplus.tdd.point.aggregate.entity.UserPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class PointController {
     public UserPoint point(
             @PathVariable long id
     ) {
-        return new UserPoint(0, 0, 0);
+        return new UserPoint(id, 0, 0);
     }
 
     /**
@@ -40,7 +42,7 @@ public class PointController {
             @PathVariable long id,
             @RequestBody long amount
     ) {
-        return new UserPoint(0, 0, 0);
+        return new UserPoint(id, amount, System.currentTimeMillis());
     }
 
     /**
@@ -51,6 +53,6 @@ public class PointController {
             @PathVariable long id,
             @RequestBody long amount
     ) {
-        return new UserPoint(0, 0, 0);
+        return new UserPoint(id, 0, 0);
     }
 }
