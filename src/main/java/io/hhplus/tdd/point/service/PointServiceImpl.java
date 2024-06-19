@@ -17,14 +17,31 @@ public class PointServiceImpl implements PointService{
     private final UserPointRepository userPointRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
+    /**
+     * 유저아이디로 유저포인트 현황을 조회한다.
+     * @param userId 유저아이디
+     * @return UserPointInfo
+     */
     public UserPointDomain loadPoint(long userId) {
         return this.userPointRepository.findById(userId);
     }
 
+    /**
+     * 유저아이디로 Point내역들을 조회한다.
+     * @param userId 유저아이디
+     * @return List<PointHistoryInfo>
+     */
     public List<PointHistoryDomain> loadHistory(long userId) {
         return this.pointHistoryRepository.findAllByUserId(userId);
     }
 
+    /**
+     * 유저포인트를 충전한다.
+     * 동시성을 위해 synchronized 사용
+     * @param userId 유저아이디
+     * @param chargePoint 충전할 포인트
+     * @return UserPointInfo
+     */
     public UserPointDomain chargePoint(long userId, long chargePoint) {
         if(chargePoint <= 0)
             throw new RuntimeException("충전하려는 금액이 이상합니다");
@@ -35,6 +52,13 @@ public class PointServiceImpl implements PointService{
         return userPointDomain;
     }
 
+    /**
+     * 유저포인트를 사용한다.
+     * 포인트 사용시 잔여포인트보다 사용할 포인트가 많을 시 오류 발행.
+     * @param userId 유저아이디
+     * @param usePoint 사용할 포인트
+     * @return UserPointInfo
+     */
     public UserPointDomain usePoint(long userId, long usePoint) {
         UserPointDomain userPointDomain = this.userPointRepository.findById(userId);
         if(usePoint <= 0)
