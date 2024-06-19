@@ -18,6 +18,7 @@
     - 포인트 내역이 정상적으로 등록되지 않으면 Exception
 2. 포인트를 사용한다  
     - 잔고가 부족할 경우 Exception
+    - 0원 사용을 요청할 경우 Exception
     - 포인트 내역이 정상적으로 등록되지 않으면 Exception
 3. 포인트를 조회한다
     - 포인트라는 Entity가 UserId로 생성되어있지 않으면 Exception이나 현재 Database 구현체에서 Default값을 보내주니 Skip
