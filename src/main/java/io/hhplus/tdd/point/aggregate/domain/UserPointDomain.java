@@ -40,4 +40,8 @@ public class UserPointDomain {
     public boolean isPointInsufficient(long point) {
         return this.point < point;
     }
+
+    public static UserPointDomain sample() {
+        return new UserPointDomain(0, 0, 0);
+    }
 }
