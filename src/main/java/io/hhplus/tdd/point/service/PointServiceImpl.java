@@ -2,6 +2,7 @@ package io.hhplus.tdd.point.service;
 
 import io.hhplus.tdd.point.aggregate.domain.PointHistoryDomain;
 import io.hhplus.tdd.point.aggregate.domain.UserPointDomain;
+import io.hhplus.tdd.point.aggregate.vo.TransactionType;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class PointServiceImpl implements PointService{
         UserPointDomain userPointDomain = this.userPointRepository.findById(userId);
         userPointDomain.chargePoint(chargePoint);
         this.userPointRepository.save(userPointDomain.getId(), userPointDomain.getPoint());
+        this.pointHistoryRepository.save(userPointDomain.getId(), userPointDomain.getPoint(), TransactionType.CHARGE, userPointDomain.getUpdateMillis());
         return userPointDomain;
     }
 
@@ -41,6 +43,7 @@ public class PointServiceImpl implements PointService{
             throw new RuntimeException("잔액이 부족합니다");
         userPointDomain.usePoint(usePoint);
         this.userPointRepository.save(userPointDomain.getId(), userPointDomain.getPoint());
+        this.pointHistoryRepository.save(userPointDomain.getId(), userPointDomain.getPoint(), TransactionType.USE, userPointDomain.getUpdateMillis());
         return userPointDomain;
     }
 }
