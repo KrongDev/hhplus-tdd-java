@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point.aggregate.entity;
 
+import io.hhplus.tdd.point.aggregate.domain.PointHistoryDomain;
 import io.hhplus.tdd.point.aggregate.vo.TransactionType;
 
 public record PointHistory(
@@ -9,4 +10,7 @@ public record PointHistory(
         TransactionType type,
         long updateMillis
 ) {
+    public PointHistoryDomain toDomain() {
+        return new PointHistoryDomain(id, userId, amount, type, updateMillis);
+    }
 }
