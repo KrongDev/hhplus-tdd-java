@@ -27,7 +27,7 @@ public class UserPointInfo {
      * @param point 사용할 포인트
      */
     public void usePoint(long point) {
-        if(this.point - point < 0)
+        if(this.point < point)
             throw new RuntimeException(String.format("잔여금보다 많은 금액을 사용하셨습니다. 잔여포인트: %d", this.point));
         update();
         this.point -= point;
