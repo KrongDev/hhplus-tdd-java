@@ -40,7 +40,7 @@ class PointServiceImplIntegrationTest {
         assertNotNull(histories);
         assertEquals(1, histories.size());
         assertEquals(userPointDomain.getId(), histories.get(0).getUserId());
-        assertEquals(userPointDomain.getPoint(), histories.get(0).getAmount());
+        assertEquals(chargePoint, histories.get(0).getAmount());
         assertEquals(TransactionType.CHARGE, histories.get(0).getType());
         assertEquals(userPointDomain.getUpdateMillis(), histories.get(0).getUpdateMillis());
     }
@@ -60,7 +60,7 @@ class PointServiceImplIntegrationTest {
         assertNotNull(histories);
         assertEquals(1, histories.size());
         assertEquals(userPointDomain.getId(), histories.get(0).getUserId());
-        assertEquals(userPointDomain.getPoint(), histories.get(0).getAmount());
+        assertEquals(usePoint, histories.get(0).getAmount());
         assertEquals(TransactionType.USE, histories.get(0).getType());
         assertEquals(userPointDomain.getUpdateMillis(), histories.get(0).getUpdateMillis());
     }

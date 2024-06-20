@@ -48,7 +48,7 @@ public class PointServiceImpl implements PointService{
         UserPointDomain userPointDomain = this.userPointRepository.findById(userId);
         userPointDomain.chargePoint(chargePoint);
         this.userPointRepository.save(userPointDomain.getId(), userPointDomain.getPoint());
-        this.pointHistoryRepository.save(userPointDomain.getId(), userPointDomain.getPoint(), TransactionType.CHARGE, userPointDomain.getUpdateMillis());
+        this.pointHistoryRepository.save(userPointDomain.getId(), chargePoint, TransactionType.CHARGE, userPointDomain.getUpdateMillis());
         return userPointDomain;
     }
 
@@ -67,7 +67,7 @@ public class PointServiceImpl implements PointService{
             throw new RuntimeException("잔액이 부족합니다");
         userPointDomain.usePoint(usePoint);
         this.userPointRepository.save(userPointDomain.getId(), userPointDomain.getPoint());
-        this.pointHistoryRepository.save(userPointDomain.getId(), userPointDomain.getPoint(), TransactionType.USE, userPointDomain.getUpdateMillis());
+        this.pointHistoryRepository.save(userPointDomain.getId(), usePoint, TransactionType.USE, userPointDomain.getUpdateMillis());
         return userPointDomain;
     }
 }
