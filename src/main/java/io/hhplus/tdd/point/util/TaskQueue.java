@@ -1,7 +1,5 @@
 package io.hhplus.tdd.point.util;
 
-import org.springframework.stereotype.Component;
-
 import java.util.concurrent.*;
 
 public class TaskQueue {
