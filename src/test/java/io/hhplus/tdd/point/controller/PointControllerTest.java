@@ -1,7 +1,6 @@
 package io.hhplus.tdd.point.controller;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PointControllerTest {
 
     @Autowired
@@ -28,6 +28,7 @@ class PointControllerTest {
     private final String actionUrl = String.format("%s/%d", rootPath, userId);
 
     @Test
+    @Order(1)
     @DisplayName("포인트 충전 - 정상적으로 충전이 이뤄지는지")
     void charge() throws Exception {
         long amount = 100;
@@ -43,6 +44,7 @@ class PointControllerTest {
     }
 
     @Test
+    @Order(2)
     @DisplayName("포인트 충전 - 0원 충전시 에러 발생")
     void chargeZeroException() throws Exception {
         long amount = 0;
@@ -56,6 +58,7 @@ class PointControllerTest {
     }
 
     @Test
+    @Order(3)
     @DisplayName("포인트 사용 - 보유 포인트보다 많이 사용하려할 때 에러 테스트")
     void useOverException() throws Exception {
         long useAmount = 150;
@@ -69,6 +72,7 @@ class PointControllerTest {
     }
 
     @Test
+    @Order(4)
     @DisplayName("포인트 사용 - 사용포인트 0원일때 에러 발생")
     void useZeroException() throws Exception {
         long useAmount = 0;
@@ -82,6 +86,7 @@ class PointControllerTest {
     }
 
     @Test
+    @Order(5)
     @DisplayName("포인트 내역 조회 - 정상적으로 포인트 내역이 조회되는지")
     void history() throws Exception {
         mockMvc.perform(get(actionUrl + "/histories"))
@@ -92,6 +97,7 @@ class PointControllerTest {
     }
 
     @Test
+    @Order(6)
     @DisplayName("포인트 조회 - 정상적으로 포인트가 조회되는지")
     void point() throws Exception {
         mockMvc.perform(get(actionUrl))
