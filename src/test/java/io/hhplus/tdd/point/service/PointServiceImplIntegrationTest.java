@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Description;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,7 +30,7 @@ class PointServiceImplIntegrationTest {
     @Test
     @DisplayName("포인트 충전 - 정상 충전 케이스")
     @Description("포인트 충전이 정상적으로 수행되는지 테스트")
-    void chargePoint() {
+    void chargePoint() throws ExecutionException, InterruptedException {
         //Given
         long userId = 1;
         long chargePoint = 100;
@@ -48,7 +49,7 @@ class PointServiceImplIntegrationTest {
     @Test
     @DisplayName("포인트 사용 - 정상 사용 케이스")
     @Description("포인트 사용이 정상적으로 수행되는지 테스트")
-    void usePoint() {
+    void usePoint() throws ExecutionException, InterruptedException {
         //Given
         long userId = 2;
         long usePoint = 100;

@@ -5,6 +5,7 @@ import io.hhplus.tdd.point.aggregate.domain.UserPointDomain;
 import io.hhplus.tdd.point.aggregate.vo.TransactionType;
 import io.hhplus.tdd.point.repository.PointHistoryRepository;
 import io.hhplus.tdd.point.repository.UserPointRepository;
+import io.hhplus.tdd.point.util.task.UserTaskQueue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.Description;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -32,7 +34,7 @@ class PointServiceImplTest {
     @Test
     @DisplayName("포인트 충전 - 정상 충전 케이스")
     @Description("포인트 충전이 정상적으로 수행되는지 테스트")
-    void chargePoint() {
+    void chargePoint() throws ExecutionException, InterruptedException {
         //Given
         long userId = 1;
         long chargePoint = 100;
@@ -60,7 +62,7 @@ class PointServiceImplTest {
     @Test
     @DisplayName("포인트 사용 - 정상 사용 케이스")
     @Description("포인트가 정상적으로 사용되는지 테스트")
-    void usePoint() {
+    void usePoint() throws ExecutionException, InterruptedException {
         //Given
         long userId = 1;
         long usePoint = 10;

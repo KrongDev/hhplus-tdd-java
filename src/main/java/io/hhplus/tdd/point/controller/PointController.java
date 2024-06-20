@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/point")
@@ -45,7 +46,7 @@ public class PointController {
     public UserPointDomain charge(
             @PathVariable long id,
             @RequestBody long amount
-    ) {
+    ) throws ExecutionException, InterruptedException {
         return this.pointService.chargePoint(id, amount);
     }
 
@@ -56,7 +57,7 @@ public class PointController {
     public UserPointDomain use(
             @PathVariable long id,
             @RequestBody long amount
-    ) {
+    ) throws ExecutionException, InterruptedException {
         return this.pointService.usePoint(id, amount);
     }
 }

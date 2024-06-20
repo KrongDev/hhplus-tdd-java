@@ -23,3 +23,10 @@
 3. 포인트를 조회한다
     - 포인트라는 Entity가 UserId로 생성되어있지 않으면 Exception이나 현재 Database 구현체에서 Default값을 보내주니 Skip
 4. 포인트 내역을 조회한다.
+
+### 동시성 테스트
+1. synchronized 사용
+   - 순차적인 처리 요구조건 충족 x
+2. ThreadPoolExecutor 사용
+   - 순차적인 처리 요구조건 충족 x
+   - Test코드 Unit Test 어려움
